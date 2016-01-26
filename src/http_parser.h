@@ -10,7 +10,7 @@
 typedef struct Request {
   uint8_t method;
   uint8_t **params;
-  uint8_t *url;
+  uint8_t *uri;
   uint8_t *body;
 } Request;
 
