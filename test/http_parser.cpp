@@ -28,5 +28,33 @@ uint8_t test_parse_string ( ) {
 
   free(request);
 
+  request = parse_request((uint8_t *) "FOO /");
+
+  check((request != NULL), "parse FOO does not return NULL");
+  check((request->method == HTTP_ERROR), "method is set to ERROR");
+
+  free(request);
+
+  request = parse_request((uint8_t *) "GET");
+
+  check((request != NULL), "parse just GET does not return NULL");
+  check((request->method == HTTP_ERROR), "method is set to ERROR");
+
+  free(request);
+
+  request = parse_request((uint8_t *) "POST");
+
+  check((request != NULL), "parse just POST does not return NULL");
+  check((request->method == HTTP_ERROR), "method is set to ERROR");
+
+  free(request);
+
+  request = parse_request((uint8_t *) "PUT");
+
+  check((request != NULL), "parse just PUT does not return NULL");
+  check((request->method == HTTP_ERROR), "method is set to ERROR");
+
+  free(request);
+
   done();
 }
