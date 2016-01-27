@@ -16,7 +16,7 @@ uint8_t test_parse_string ( ) {
 
   check((request != NULL), "parse GET does not return NULL");
   check((request->method == HTTP_GET), "method is set to GET");
-  check((strcmp((char *) request->uri, "/") == 0), "URI is set correctly");
+  check((strcmp((char *) request->path, "/") == 0), "path is set correctly");
 
   free(request);
 
@@ -25,7 +25,7 @@ uint8_t test_parse_string ( ) {
 
   check((request != NULL), "parse POST does not return NULL");
   check((request->method == HTTP_POST), "method is set to POST");
-  check((strcmp((char *) request->uri, "/") == 0), "URI is set correctly");
+  check((strcmp((char *) request->path, "/") == 0), "path is set correctly");
 
   free(request);
 
@@ -34,7 +34,7 @@ uint8_t test_parse_string ( ) {
 
   check((request != NULL), "parse PUT does not return NULL");
   check((request->method == HTTP_PUT), "method is set to PUT");
-  check((strcmp((char *) request->uri, "/") == 0), "URI is set correctly");
+  check((strcmp((char *) request->path, "/") == 0), "path is set correctly");
 
   free(request);
 

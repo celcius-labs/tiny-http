@@ -15,6 +15,10 @@ Request *parse_request (uint8_t *request) {
     return NULL;
   }
 
+  // set up some sane defaults
+  ret->host = NULL;
+  ret->params = NULL;
+  ret->body = NULL;
 
   // start iterating through the request, break out the parts.
   // this is clunky, but fast
@@ -63,7 +67,75 @@ Request *parse_request (uint8_t *request) {
   // set the uri by terminating the string where we left off
   request[position] = '\0';
 
-  ret->uri = uri;
+  ret->path = uri;
+
+  // if we still haven't seen our first CRLF, keep going
+  if (crlf == 0) {
+    while (request[position] != '\n') {
+      position++;
+    }
+  }
+
+  // move past the LF
+  if (request[position] == '\r') {
+    position++;
+  }
+
+
 
   return ret;
+}
+
+uint8_t **parse_params (uint8_t *uri) {
+  uint8_t **params = (uint8_t **) malloc(sizeof(uint8_t **) * (MAX_PARAMS + 1));
+  uint8_t current = 0;
+
+  if (params == NULL) {
+    // out of memory
+    return NULL;
+  }
+
+  // set a default
+  params[0] = NULL;
+
+  uint16_t position = 0;
+
+  // figure out where the params start
+  while (uri[position] != '\0' && uri[position] != '?') {
+    position++;
+  }
+
+  if (uri[position] == '?') {
+    uri[position] = '\0';
+    position++;
+
+    if (uri[position] == '\0') {
+      // uri ends with ? and nothing further
+      free(params);
+      return NULL;
+    }
+  } else {
+    // at the end, no params, free everything up and return NULL
+    free(params);
+    return NULL;
+  }
+
+  // assign the first parameter and move forward
+  params[current] = &uri[position];
+  current++;
+
+  while (uri[position] != '\0') {
+    if (uri[position] == '&') {
+      uri[position] = '\0';
+      position++;
+
+      params[current] = &uri[position];
+      current++;
+      if (uri[position] == '\0') {
+        break;
+      }
+    }
+  }
+
+  return params;
 }
