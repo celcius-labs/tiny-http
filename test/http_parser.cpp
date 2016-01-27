@@ -72,3 +72,44 @@ uint8_t test_parse_string ( ) {
 
   done();
 }
+
+uint8_t test_parse_params ( ) {
+  uint8_t uri[256];
+  uint8_t **params;
+
+  strcpy((char *) uri, "/foo");
+  params = parse_params(uri);
+
+  check((params == NULL), "parse of uri without params should have no params and set to NULL");
+
+  strcpy((char *) uri, "/foo?");
+  params = parse_params(uri);
+
+  check((params == NULL), "parse of uri without params but a ? should have no params and set to NULL");
+
+  strcpy((char *) uri, "/foo?test=hello");
+  params = parse_params(uri);
+
+  check((params != NULL), "parse of uri with one param is not NULL");
+  check((strcmp((char *) params[0], "test=hello") == 0), "first param is correct");
+  check((params[1] == NULL), "second param is NULL");
+
+  strcpy((char *) uri, "/foo?test=hello&yay=tests");
+  params = parse_params(uri);
+
+  check((params != NULL), "parse of uri with two params is not NULL");
+  check((strcmp((char *) params[0], "test=hello") == 0), "first param is correct");
+  check((strcmp((char *) params[1], "yay=tests") == 0), "second param is correct");
+  check((params[2] == NULL), "third param is NULL");
+
+  strcpy((char *) uri, "/foo?test=hello&yay=tests&more=tests");
+  params = parse_params(uri);
+
+  check((params != NULL), "parse of uri with three params is not NULL");
+  check((strcmp((char *) params[0], "test=hello") == 0), "first param is correct");
+  check((strcmp((char *) params[1], "yay=tests") == 0), "second param is correct");
+  check((strcmp((char *) params[2], "more=tests") == 0), "third param is correct");
+  check((params[3] == NULL), "fourth param is NULL");
+
+  done();
+}

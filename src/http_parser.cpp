@@ -127,15 +127,18 @@ uint8_t **parse_params (uint8_t *uri) {
   while (uri[position] != '\0') {
     if (uri[position] == '&') {
       uri[position] = '\0';
-      position++;
 
-      params[current] = &uri[position];
+      params[current] = &uri[position + 1];
       current++;
-      if (uri[position] == '\0') {
+      if (uri[position + 1] == '\0') {
         break;
       }
     }
+
+    position++;
   }
+
+  params[current] = NULL;
 
   return params;
 }

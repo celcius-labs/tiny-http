@@ -33,3 +33,4 @@ void _test_start (const char *);
 
 
 uint8_t test_parse_string ( );
+uint8_t test_parse_params ( );

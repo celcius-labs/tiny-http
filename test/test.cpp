@@ -78,7 +78,8 @@ int main (int argc, char **argv) {
 #endif
 
 
-  test_parse_string();
+  test(test_parse_string, "Parse String");
+  test(test_parse_params, "Parse Params");
 
 
 #ifdef ARDUINO
