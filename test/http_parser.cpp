@@ -18,16 +18,12 @@ uint8_t test_parse_string ( ) {
   check((request->method == HTTP_GET), "method is set to GET");
   check((strcmp((char *) request->path, "/") == 0), "path is set correctly");
 
-  free(request);
-
   strcpy((char *) body, "POST /\n\r\n\r");
   request = parse_request(body);
 
   check((request != NULL), "parse POST does not return NULL");
   check((request->method == HTTP_POST), "method is set to POST");
   check((strcmp((char *) request->path, "/") == 0), "path is set correctly");
-
-  free(request);
 
   strcpy((char *) body, "PUT /\n\r\n\r");
   request = parse_request(body);
@@ -36,15 +32,11 @@ uint8_t test_parse_string ( ) {
   check((request->method == HTTP_PUT), "method is set to PUT");
   check((strcmp((char *) request->path, "/") == 0), "path is set correctly");
 
-  free(request);
-
   strcpy((char *) body, "FOO /\n\r\n\r");
   request = parse_request(body);
 
   check((request != NULL), "parse FOO does not return NULL");
   check((request->method == HTTP_ERROR), "method is set to ERROR");
-
-  free(request);
 
   strcpy((char *) body, "GET");
   request = parse_request(body);
@@ -52,23 +44,17 @@ uint8_t test_parse_string ( ) {
   check((request != NULL), "parse just GET does not return NULL");
   check((request->method == HTTP_ERROR), "method is set to ERROR");
 
-  free(request);
-
   strcpy((char *) body, "GET");
   request = parse_request(body);
 
   check((request != NULL), "parse just POST does not return NULL");
   check((request->method == HTTP_ERROR), "method is set to ERROR");
 
-  free(request);
-
   strcpy((char *) body, "PUT");
   request = parse_request(body);
 
   check((request != NULL), "parse just PUT does not return NULL");
   check((request->method == HTTP_ERROR), "method is set to ERROR");
-
-  free(request);
 
   strcpy((char *) body, "GET /?foo=bar HTTP/1.1\n\r");
   request = parse_request(body);
@@ -77,9 +63,6 @@ uint8_t test_parse_string ( ) {
   check((request->method == HTTP_GET), "method is set to GET");
   check((strcmp((char *) request->path, "/") == 0), "path is set correctly");
   check((strcmp((char *) request->params[0], "foo=bar") == 0), "params are set correctly");
-
-  free(request->params);
-  free(request);
 
   strcpy((char *) body, "GET /?foo=bar HTTP/1.1\n\rHeader1: foo\n\rHeader2: bar");
   request = parse_request(body);
@@ -91,9 +74,6 @@ uint8_t test_parse_string ( ) {
   check((strcmp((char *) request->headers[0], "Header1: foo") == 0), "header 1 is set correctly");
   check((strcmp((char *) request->headers[1], "Header2: bar") == 0), "header 2 is set correctly");
   check((request->headers[2] == NULL), "header 3 is null");
-  free(request->params);
-  free(request->headers);
-  free(request);
 
   done();
 }
@@ -106,13 +86,11 @@ uint8_t test_parse_params ( ) {
   params = parse_params(uri);
 
   check((params == NULL), "parse of uri without params should have no params and set to NULL");
-  free(params);
 
   strcpy((char *) uri, "/foo?");
   params = parse_params(uri);
 
   check((params == NULL), "parse of uri without params but a ? should have no params and set to NULL");
-  free(params);
 
   strcpy((char *) uri, "/foo?test=hello");
   params = parse_params(uri);
@@ -120,7 +98,6 @@ uint8_t test_parse_params ( ) {
   check((params != NULL), "parse of uri with one param is not NULL");
   check((strcmp((char *) params[0], "test=hello") == 0), "first param is correct");
   check((params[1] == NULL), "second param is NULL");
-  free(params);
 
   strcpy((char *) uri, "/foo?test=hello&yay=tests");
   params = parse_params(uri);
@@ -129,17 +106,6 @@ uint8_t test_parse_params ( ) {
   check((strcmp((char *) params[0], "test=hello") == 0), "first param is correct");
   check((strcmp((char *) params[1], "yay=tests") == 0), "second param is correct");
   check((params[2] == NULL), "third param is NULL");
-  free(params);
-
-  strcpy((char *) uri, "/foo?test=hello&yay=tests&more=tests");
-  params = parse_params(uri);
-
-  check((params != NULL), "parse of uri with three params is not NULL");
-  check((strcmp((char *) params[0], "test=hello") == 0), "first param is correct");
-  check((strcmp((char *) params[1], "yay=tests") == 0), "second param is correct");
-  check((strcmp((char *) params[2], "more=tests") == 0), "third param is correct");
-  check((params[3] == NULL), "fourth param is NULL");
-  free(params);
 
   strcpy((char *) uri, "/foo?test=hello&yay=tests&more=tests");
   params = parse_params(uri);
@@ -150,7 +116,14 @@ uint8_t test_parse_params ( ) {
   check((strcmp((char *) params[2], "more=tests") == 0), "third param is correct");
   check((params[3] == NULL), "fourth param is NULL");
 
-  free(params);
+  strcpy((char *) uri, "/foo?test=hello&yay=tests&more=tests");
+  params = parse_params(uri);
+
+  check((params != NULL), "parse of uri with three params is not NULL");
+  check((strcmp((char *) params[0], "test=hello") == 0), "first param is correct");
+  check((strcmp((char *) params[1], "yay=tests") == 0), "second param is correct");
+  check((strcmp((char *) params[2], "more=tests") == 0), "third param is correct");
+  check((params[3] == NULL), "fourth param is NULL");
 
   done();
 }
@@ -171,8 +144,6 @@ uint8_t test_parse_headers ( ) {
   check((strcmp((char *) headers[0], "Header1: foo") == 0), "first header is correct");
   check((headers[1] == NULL), "second header is NULL");
 
-  free(headers);
-
   strcpy((char *) request, "Header1: foo\n\rHeader2: bar\n\r");
   headers = parse_headers(request);
 
@@ -180,8 +151,6 @@ uint8_t test_parse_headers ( ) {
   check((strcmp((char *) headers[0], "Header1: foo") == 0), "first header is correct");
   check((strcmp((char *) headers[1], "Header2: bar") == 0), "second header is correct");
   check((headers[2] == NULL), "third header is NULL");
-
-  free(headers);
 
   done();
 }

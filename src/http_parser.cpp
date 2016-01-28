@@ -4,39 +4,29 @@
 #include "http_parser.h"
 
 Request *parse_request (uint8_t *request) {
-  Request *ret;
+  static Request req = {0};
   uint16_t position = 0;
 
-  ret = (Request *) malloc(sizeof(Request));
-
-  // out of memory!
-  if (ret == NULL) {
-    return NULL;
-  }
-
-  // set up some sane defaults
-  ret->params = NULL;
-  ret->body = NULL;
 
   // start iterating through the request, break out the parts.
   // this is clunky, but fast
   if (request[0] == 'G' && request[1] == 'E' && request[2] == 'T' && request[3] == ' ') {
     position = 4;
-    ret->method = HTTP_GET;
+    req.method = HTTP_GET;
   } else if (request[0] == 'P') {
     if (request[1] == 'O' && request[2] == 'S' && request[3] == 'T' && request[4] == ' ') {
       position = 5;
-      ret->method = HTTP_POST;
+      req.method = HTTP_POST;
     } else if (request[1] == 'U' && request[2] == 'T' && request[3] == ' ') {
       position = 4;
-      ret->method = HTTP_PUT;
+      req.method = HTTP_PUT;
     } else {
-      ret->method = HTTP_ERROR;
-      return ret;
+      req.method = HTTP_ERROR;
+      return &req;
     }
   } else {
-    ret->method = HTTP_ERROR;
-    return ret;
+    req.method = HTTP_ERROR;
+    return &req;
   }
 
   // set the uri to the current position, now that we have the method
@@ -49,18 +39,18 @@ Request *parse_request (uint8_t *request) {
 
   // if we're already at the end, we can consider this an invalid request
   if (request[position] == '\0') {
-    ret->method = HTTP_ERROR;
+    req.method = HTTP_ERROR;
 
-    return ret;
+    return &req;
   }
 
   // set the uri by terminating the string where we left off
   request[position] = '\0';
 
-  ret->path = uri;
+  req.path = uri;
 
   // and set up the params
-  ret->params = parse_params(uri);
+  req.params = parse_params(uri);
 
   position++;
 
@@ -69,7 +59,7 @@ Request *parse_request (uint8_t *request) {
   }
 
   if (request[position] == '\0') {
-    return ret;
+    return &req;
   }
 
   request[position] = '\0';
@@ -84,22 +74,17 @@ Request *parse_request (uint8_t *request) {
   position++;
 
   if (request[position] == '\0') {
-    return ret;
+    return &req;
   }
 
-  ret->headers = parse_headers(&request[position]);
+  req.headers = parse_headers(&request[position]);
 
-  return ret;
+  return &req;
 }
 
 uint8_t **parse_params (uint8_t *uri) {
-  uint8_t **params = (uint8_t **) malloc(sizeof(uint8_t **) * (MAX_PARAMS + 1));
+  static uint8_t *params[MAX_PARAMS + 1];
   uint8_t current = 0;
-
-  if (params == NULL) {
-    // out of memory
-    return NULL;
-  }
 
   uint16_t position = 0;
 
@@ -114,12 +99,10 @@ uint8_t **parse_params (uint8_t *uri) {
 
     if (uri[position] == '\0') {
       // uri ends with ? and nothing further
-      free(params);
       return NULL;
     }
   } else {
-    // at the end, no params, free everything up and return NULL
-    free(params);
+    // at the end, no params return NULL
     return NULL;
   }
 
@@ -147,17 +130,10 @@ uint8_t **parse_params (uint8_t *uri) {
 }
 
 uint8_t **parse_headers (uint8_t *request) {
-  uint8_t **headers = (uint8_t **) malloc(sizeof(uint8_t **) * (MAX_HEADERS + 1));
+  static uint8_t *headers[MAX_HEADERS + 1];
   uint16_t current = 0;
 
-  if (headers == NULL) {
-    // out of memory
-    return NULL;
-  }
-
   if (request[0] == '\0') {
-    free(headers);
-
     return NULL;
   }
 
