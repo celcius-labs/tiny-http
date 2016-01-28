@@ -12,7 +12,7 @@
     "url": "https://github.com/celcius-labs/tiny-http.git"
   },
   "exclude": [
-    "test",
+    "test"
   ],
   "frameworks": "*",
   "platforms": "*"
