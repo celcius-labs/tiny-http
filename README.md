@@ -6,6 +6,7 @@ A super tiny HTTP server targeting embedded devices.
 
 * Tiny (small memory footprint)
 * Fast (small CPU footprint)
+* No Heap Usage
 * Modular (optional middleware)
 * Well Tested
 
