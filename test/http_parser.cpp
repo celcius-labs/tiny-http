@@ -70,7 +70,7 @@ uint8_t test_parse_string ( ) {
 
   free(request);
 
-  strcpy((char *) body, "GET /?foo=bar HTTP/1.1\n\r\n\r");
+  strcpy((char *) body, "GET /?foo=bar HTTP/1.1\n\r");
   request = parse_request(body);
 
   check((request != NULL), "parse GET does not return NULL");

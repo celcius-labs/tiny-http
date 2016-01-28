@@ -75,12 +75,18 @@ Request *parse_request (uint8_t *request) {
 
   request[position] = '\0';
 
+  position++;
+
   // move past the LF
   if (request[position + 1] == '\r') {
     position++;
   }
 
   position++;
+
+  if (request[position] == '\0') {
+    return ret;
+  }
 
   ret->headers = parse_headers(&request[position]);
 
@@ -174,6 +180,10 @@ uint8_t **parse_headers (uint8_t *request) {
         headers[current] = &request[position];
         current++;
       }
+    }
+
+    if (request[position] == '\0') {
+      break;
     }
 
     position++;
