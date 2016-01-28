@@ -2,6 +2,10 @@
 
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef MAX_PARAMS
 #define MAX_PARAMS 25
 #endif
@@ -26,3 +30,7 @@ typedef struct Request {
 Request *parse_request (uint8_t *);
 uint8_t **parse_params (uint8_t *);
 uint8_t **parse_headers (uint8_t *);
+
+#ifdef __cplusplus
+}
+#endif
