@@ -8,3 +8,11 @@ A super tiny HTTP server targeting embedded devices.
 * Fast (small CPU footprint)
 * Modular (optional middleware)
 * Well Tested
+
+## Current Status
+
+* Parse method
+* Parse path
+* Parse parameters
+* Parse headers
+* Lots of tests
