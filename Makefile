@@ -1,17 +1,24 @@
-$(CC) = g++
+CC=g++
 $(CPP) = g++
 
 OBJS = src/http_parser.o
 TEST = test/http_parser.o test/test.o
 CFLAGS = -Isrc
 
-all: $(OBJS) $(TEST)
-	g++ $(OBJS) $(TEST) -o test_runner
+all: build
+
+build: $(OBJS) $(TEST)
+	$(AR) -cvq libtinyhttp $(OBJS)
+	$(CC) $(OBJS) $(TEST) -o test_runner
 
 .cpp.o:
-	g++ $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	$(RM) $(OBJS)
 	$(RM) $(TEST)
 	$(RM) test_runner
+	$(RM) libtinyhttp
+
+test: build
+	./test_runner -s
