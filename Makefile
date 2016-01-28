@@ -8,7 +8,7 @@ CFLAGS = -Isrc
 all: build
 
 build: $(OBJS) $(TEST)
-	$(AR) -cvq libtinyhttp $(OBJS)
+	$(AR) -cvq libtinyhttp.a $(OBJS)
 	$(CC) $(OBJS) $(TEST) -o test_runner
 
 .cpp.o:
@@ -18,7 +18,7 @@ clean:
 	$(RM) $(OBJS)
 	$(RM) $(TEST)
 	$(RM) test_runner
-	$(RM) libtinyhttp
+	$(RM) libtinyhttp.a
 
 test: build
 	./test_runner -s
