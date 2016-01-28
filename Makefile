@@ -19,6 +19,13 @@ clean:
 	$(RM) $(TEST)
 	$(RM) test_runner
 	$(RM) libtinyhttp.a
+	$(RM) simple_benchmark
 
 test: build
 	./test_runner -s
+
+simple_benchmark:
+	$(CC) benchmarks/simple.cpp -Isrc -L. -ltinyhttp -o simple_benchmark
+
+benchmark: build simple_benchmark
+	./simple_benchmark

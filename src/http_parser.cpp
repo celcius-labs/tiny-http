@@ -54,7 +54,7 @@ Request *parse_request (uint8_t *request) {
 
   position++;
 
-  while (request[position] != '\n' && request[position] != '\0') {
+  while (request[position] != '\n' && request[position] != '\r' && request[position] != '\0') {
     position++;
   }
 
@@ -67,7 +67,7 @@ Request *parse_request (uint8_t *request) {
   position++;
 
   // move past the LF
-  if (request[position + 1] == '\r') {
+  if (request[position + 1] == '\r' || request[position + 1] == '\n') {
     position++;
   }
 
@@ -143,11 +143,11 @@ uint8_t **parse_headers (uint8_t *request) {
   current++;
 
   while (request[position] != '\0') {
-    if (request[position] == '\n') {
+    if (request[position] == '\n' || request[position] == '\r') {
       request[position] = '\0';
       position++;
 
-      if (request[position] == '\r') {
+      if (request[position] == '\r' || request[position] == '\n') {
         position++;
       }
 

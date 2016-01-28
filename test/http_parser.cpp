@@ -75,6 +75,17 @@ uint8_t test_parse_string ( ) {
   check((strcmp((char *) request->headers[1], "Header2: bar") == 0), "header 2 is set correctly");
   check((request->headers[2] == NULL), "header 3 is null");
 
+  strcpy((char *) body, "GET /?foo=bar HTTP/1.1\r\nHeader1: foo\r\nHeader2: bar");
+  request = parse_request(body);
+
+  check((request != NULL), "parse GET does not return NULL when CRLF reversed");
+  check((request->method == HTTP_GET), "method is set to GET");
+  check((strcmp((char *) request->path, "/") == 0), "path is set correctly");
+  check((strcmp((char *) request->params[0], "foo=bar") == 0), "params are set correctly");
+  check((strcmp((char *) request->headers[0], "Header1: foo") == 0), "header 1 is set correctly");
+  check((strcmp((char *) request->headers[1], "Header2: bar") == 0), "header 2 is set correctly");
+  check((request->headers[2] == NULL), "header 3 is null");
+
   done();
 }
 
