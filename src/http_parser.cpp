@@ -16,7 +16,6 @@ Request *parse_request (uint8_t *request) {
   }
 
   // set up some sane defaults
-  ret->host = NULL;
   ret->params = NULL;
   ret->body = NULL;
 
@@ -44,16 +43,8 @@ Request *parse_request (uint8_t *request) {
   // set the uri to the current position, now that we have the method
   uint8_t *uri = &request[position];
 
-  // continue until the first space, this signifies the completion of the URI
-  // keep track of how many crlf's have been seen, as if the request doesn't
-  // include http version, we'll need to know this
-  uint8_t crlf = 0;
 
   while (request[position] != '\0' && request[position] != ' ' && request[position] != '\n' && request[position] != '\r') {
-    if (request[position] == '\n') {
-      crlf++;
-    }
-
     position++;
   }
 
@@ -69,19 +60,29 @@ Request *parse_request (uint8_t *request) {
 
   ret->path = uri;
 
-  // if we still haven't seen our first CRLF, keep going
-  if (crlf == 0) {
-    while (request[position] != '\n') {
-      position++;
-    }
-  }
+  // and set up the params
+  ret->params = parse_params(uri);
 
-  // move past the LF
-  if (request[position] == '\r') {
+  position++;
+
+  while (request[position] != '\n' && request[position] != '\0') {
     position++;
   }
 
+  if (request[position] == '\0') {
+    return ret;
+  }
 
+  request[position] = '\0';
+
+  // move past the LF
+  if (request[position + 1] == '\r') {
+    position++;
+  }
+
+  position++;
+
+  ret->headers = parse_headers(&request[position]);
 
   return ret;
 }
@@ -94,9 +95,6 @@ uint8_t **parse_params (uint8_t *uri) {
     // out of memory
     return NULL;
   }
-
-  // set a default
-  params[0] = NULL;
 
   uint16_t position = 0;
 
@@ -141,4 +139,47 @@ uint8_t **parse_params (uint8_t *uri) {
   params[current] = NULL;
 
   return params;
+}
+
+uint8_t **parse_headers (uint8_t *request) {
+  uint8_t **headers = (uint8_t **) malloc(sizeof(uint8_t **) * (MAX_HEADERS + 1));
+  uint16_t current = 0;
+
+  if (headers == NULL) {
+    // out of memory
+    return NULL;
+  }
+
+  if (request[0] == '\0') {
+    free(headers);
+
+    return NULL;
+  }
+
+  uint16_t position = 0;
+
+  headers[current] = request;
+  current++;
+
+  while (request[position] != '\0') {
+    if (request[position] == '\n') {
+      request[position] = '\0';
+      position++;
+
+      if (request[position] == '\r') {
+        position++;
+      }
+
+      if (request[position] != '\0') {
+        headers[current] = &request[position];
+        current++;
+      }
+    }
+
+    position++;
+  }
+
+  headers[current] = NULL;
+
+  return headers;
 }
