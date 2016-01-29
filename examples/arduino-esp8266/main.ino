@@ -2,8 +2,8 @@
 
 #include "http_parser.h"
 
-#define SSID "Hometown"
-#define PASSWORD "z1ppy!234"
+#define SSID ""
+#define PASSWORD ""
 
 // timeout of 5 seconds
 #define TIMEOUT 5000
