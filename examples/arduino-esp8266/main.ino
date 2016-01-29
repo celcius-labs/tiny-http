@@ -5,9 +5,6 @@
 #define SSID ""
 #define PASSWORD ""
 
-// timeout of 5 seconds
-#define TIMEOUT 5000
-
 // maximum request size, defaults to 1k
 #define MAX_REQUEST_SIZE 1024
 
