@@ -1,7 +1,7 @@
 CC=g++
 $(CPP) = g++
 
-OBJS = src/http_parser.o
+OBJS = src/http_parser.o src/http_response.o
 TEST = test/http_parser.o test/test.o
 CFLAGS = -Isrc
 
