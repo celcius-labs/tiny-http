@@ -6,6 +6,18 @@
 #endif
 
 static void send_headers (Response *);
+static void _write (Response *, uint8_t *);
+
+#define WRITE(response, data) _write(response, (uint8_t *) data);
+
+void _write (Response *response, uint8_t *data) {
+#ifdef ARDUINO_ARCH_ESP8266
+  response->connection.print((char *) data);
+#else
+  size_t size = strlen((char *) data);
+  write(response->fd, (void *) data, size * sizeof(uint8_t));
+#endif
+}
 
 #ifdef ARDUINO_ARCH_ESP8266
 Response *response_create (WiFiClient connection) {
@@ -30,12 +42,7 @@ void response_write (Response *response, uint8_t *data) {
     send_headers(response);
   }
 
-#ifdef ARDUINO_ARCH_ESP8266
-  response->connection.print((char *) data);
-#else
-  size_t size = strlen((char *) data);
-  write(response->fd, (void *) data, size * sizeof(uint8_t));
-#endif
+  WRITE(response, data);
 }
 
 static const char *response_status (uint16_t code) {
@@ -54,44 +61,22 @@ static const char *response_status (uint16_t code) {
 static void send_headers (Response *response) {
   response->headers_sent = 1;
 
-#ifdef ARDUINO_ARCH_ESP8266
-  response->connection.print(response_status(response->code));
-
-  response->connection.print("Content-type: ")
+  WRITE(response, response_status(response->code));
+  WRITE(response, "Content-type: ")
 
   if (response->content_type[0] != '\0') {
-    response->connection.print(response->content_type);
-    response->connection.print("\r\n");
+    WRITE(response, response->content_type);
+    WRITE(response, "\r\n");
   } else {
-    response->connection.print("text/plain\r\n");
+    WRITE(response, "text/plain\r\n");
   }
 
   for (uint8_t i = 0; i < response->num_headers; i++) {
-    response->connection.print(response->headers[i]);
-    response->connection.print("\r\n");
+    WRITE(response, response->headers[i]);
+    WRITE(response, "\r\n");
   }
 
-  Serial.print("\r\n");
-#else
-  const char *status = response_status(response->code);
-  write(response->fd, (void *) status, strlen(status));
-  write(response->fd, (void *) "Content-type: ", 14);
-
-  if (response->content_type[0] != '\0') {
-    write(response->fd, (void *) response->content_type, strlen((char *) response->content_type));
-  } else {
-    write(response->fd, (void *) "text/plain", 10);
-  }
-
-  write(response->fd, "\r\n", 2);
-
-  for (uint8_t i = 0; i < response->num_headers; i++) {
-    write(response->fd, (void *) response->headers[i], strlen((char *) response->headers[i]));
-    write(response->fd, "\r\n", 2);
-  }
-
-  write(response->fd, "\r\n", 2);
-#endif
+  WRITE(response, "\r\n");
 }
 
 void response_set_header (Response *response, uint8_t *header) {
