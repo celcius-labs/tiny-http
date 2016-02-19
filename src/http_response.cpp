@@ -27,6 +27,8 @@ void _write (Response *response, uint8_t *data) {
 Response *response_create (WiFiClient connection) {
   static Response response = { 0 };
 
+  memset(&response, 0, sizeof(Response));
+
   response.connection = connection;
 
   return &response;
@@ -34,6 +36,8 @@ Response *response_create (WiFiClient connection) {
 #else
 Response *response_create (uint8_t fd) {
   static Response response = { 0 };
+
+  memset(&response, 0, sizeof(Response));
 
   response.fd = fd;
 
@@ -63,6 +67,11 @@ static const char *response_status (uint16_t code) {
 }
 
 static void send_headers (Response *response) {
+  // if there is no header sent, set it to 200
+  if (response->code == 0) {
+    response->code = 200;
+  }
+
   response->headers_sent = 1;
 
   WRITE(response, response_status(response->code));

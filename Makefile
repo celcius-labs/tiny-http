@@ -2,7 +2,7 @@ CC=g++
 $(CPP) = g++
 
 OBJS = src/http_request.o src/http_response.o
-TEST = test/http_request.o test/test.o
+TEST = test/http_request.o test/http_response.o test/test.o
 CFLAGS = -Isrc
 
 all: build

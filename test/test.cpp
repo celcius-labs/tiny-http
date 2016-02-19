@@ -81,6 +81,8 @@ int main (int argc, char **argv) {
   test(test_parse_headers, "Parse Headers");
   test(test_parse_string, "Parse String");
 
+  test(test_response_write, "Response Write");
+
 
 #ifdef ARDUINO
   Serial.println();
