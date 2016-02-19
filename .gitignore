@@ -1,5 +1,5 @@
 test_runner
 libtinyhttp.a
-src/http_parser.o
-test/http_parser.o
+src/*.o
+test/*.o
 test/test.o
