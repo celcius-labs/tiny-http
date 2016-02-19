@@ -57,7 +57,7 @@ static const char *response_status (uint16_t code) {
   switch (code) {
     case 200:
     return "HTTP/1.1 200 OK\r\n";
-    case 400:
+    case 404:
     return "HTTP/1.1 404 NOT FOUND\r\n";
     case 500:
     return "HTTP/1.1 500 ERROR\r\n";
