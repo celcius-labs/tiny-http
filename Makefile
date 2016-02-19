@@ -1,8 +1,8 @@
 CC=g++
 $(CPP) = g++
 
-OBJS = src/http_parser.o src/http_response.o
-TEST = test/http_parser.o test/test.o
+OBJS = src/http_request.o src/http_response.o
+TEST = test/http_request.o test/test.o
 CFLAGS = -Isrc
 
 all: build
