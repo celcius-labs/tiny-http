@@ -23,7 +23,7 @@ typedef struct Response {
 #else
   uint8_t fd;
 #endif
-  void (*write)(uint8_t *, uint16_t);
+  void (*write)(uint8_t *);
 } Response;
 
 #ifdef ARDUINO_ARCH_ESP8266

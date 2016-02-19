@@ -11,12 +11,16 @@ static void _write (Response *, uint8_t *);
 #define WRITE(response, data) _write(response, (uint8_t *) data);
 
 void _write (Response *response, uint8_t *data) {
+  if (response->write != NULL) {
+    response->write(data);
+  } else {
 #ifdef ARDUINO_ARCH_ESP8266
-  response->connection.print((char *) data);
+    response->connection.print((char *) data);
 #else
-  size_t size = strlen((char *) data);
-  write(response->fd, (void *) data, size * sizeof(uint8_t));
+    size_t size = strlen((char *) data);
+    write(response->fd, (void *) data, size * sizeof(uint8_t));
 #endif
+  }
 }
 
 #ifdef ARDUINO_ARCH_ESP8266
