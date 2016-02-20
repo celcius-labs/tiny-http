@@ -18,7 +18,11 @@ void _write (Response *response, uint8_t *data) {
     response->connection.print((char *) data);
 #else
     size_t size = strlen((char *) data);
-    (void) write(response->fd, (void *) data, size * sizeof(uint8_t));
+    uint8_t res = write(response->fd, (void *) data, size * sizeof(uint8_t));
+
+    if (res) {
+      // gcc noop
+    }
 #endif
   }
 }
