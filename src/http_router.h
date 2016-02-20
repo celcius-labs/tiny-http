@@ -39,7 +39,7 @@ uint8_t router_add_route (Router *, uint8_t *, void (*)(Request *, Response *));
 #ifdef ARDUINO_ARCH_ESP8266
 void route (WiFiClient, Router *, uint8_t *);
 #else
-void route (uint8_t, Router *, uint8_t);
+void route (uint8_t, Router *, uint8_t *);
 #endif
 
 #ifdef __cplusplus
