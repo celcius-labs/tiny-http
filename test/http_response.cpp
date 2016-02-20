@@ -24,7 +24,7 @@ uint8_t test_response_write ( ) {
   check((response->headers_sent == 1), "headers are sent");
   check((response->code == 200), "response code is set to 200");
 
-  const char *expected = "HTTP/1.1 200 OK\r\nContent-type: text/plain\r\n\r\nHello";
+  const char *expected = "HTTP/1.1 200 OK\r\nContent-type: text/html\r\n\r\nHello";
   check((strcmp((char *) write_buffer, expected) == 0), "output is correct");
 
 
@@ -60,7 +60,7 @@ uint8_t test_response_write ( ) {
   check((response->headers_sent == 1), "headers are sent");
   check((response->code == 404), "response code is still set to 404");
 
-  const char *expected3 = "HTTP/1.1 404 NOT FOUND\r\nContent-type: text/plain\r\n\r\nHello";
+  const char *expected3 = "HTTP/1.1 404 NOT FOUND\r\nContent-type: text/html\r\n\r\nHello";
   check((strcmp((char *) write_buffer, expected3) == 0), "output is correct");
 
   done();

@@ -85,7 +85,7 @@ static void send_headers (Response *response) {
     WRITE(response, response->content_type);
     WRITE(response, "\r\n");
   } else {
-    WRITE(response, "text/plain\r\n");
+    WRITE(response, "text/html\r\n");
   }
 
   for (uint8_t i = 0; i < response->num_headers; i++) {
