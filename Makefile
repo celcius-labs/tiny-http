@@ -1,9 +1,10 @@
 CC=g++
 $(CPP) = g++
 
-OBJS = src/http_request.o src/http_response.o
+OBJS = src/http_request.o src/http_response.o src/http_router.o
 TEST = test/http_request.o test/http_response.o test/test.o
-CFLAGS = -Isrc
+CFLAGS = -Isrc -Wall -Werror -march=native -O3
+LDFLAGS = -O3
 
 all: build
 
