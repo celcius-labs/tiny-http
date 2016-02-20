@@ -49,13 +49,13 @@ int main (int argc, char *argv[]) {
   router = router_create();
   router_add_route(router, (uint8_t *) "/ping", pong);
 
-  while (1) {
-    /* Now start listening for the clients, here process will
-    * go in sleep mode and will wait for the incoming connection
-    */
+  /* Now start listening for the clients, here process will
+  * go in sleep mode and will wait for the incoming connection
+  */
+  listen(sockfd, 500);
+  clilen = sizeof(cli_addr);
 
-    listen(sockfd, 500);
-    clilen = sizeof(cli_addr);
+  while (1) {
 
     /* Accept actual connection from the client */
     newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
