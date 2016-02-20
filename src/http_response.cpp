@@ -18,7 +18,7 @@ void _write (Response *response, uint8_t *data) {
     response->connection.print((char *) data);
 #else
     size_t size = strlen((char *) data);
-    write(response->fd, (void *) data, size * sizeof(uint8_t));
+    (void) write(response->fd, (void *) data, size * sizeof(uint8_t));
 #endif
   }
 }
