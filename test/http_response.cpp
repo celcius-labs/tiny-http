@@ -5,7 +5,7 @@
 
 #include "http_response.h"
 
-uint8_t write_buffer[1024] = { 0 };
+static uint8_t write_buffer[1024] = { 0 };
 
 static void reset_write ( ) {
   write_buffer[0] = '\0';

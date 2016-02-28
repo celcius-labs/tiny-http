@@ -2,9 +2,9 @@ CC=g++
 $(CPP) = g++
 
 OBJS = src/http_request.o src/http_response.o src/http_router.o
-TEST = test/http_request.o test/http_response.o test/test.o
-CFLAGS = -Isrc -Wall -Werror -march=native -O3
-LDFLAGS = -O3
+TEST = test/http_request.o test/http_response.o test/http_router.o test/test.o
+CFLAGS = -Isrc -Wall -Werror -march=native -O3 -g
+LDFLAGS = -O3 -g
 
 all: build
 

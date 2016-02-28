@@ -3,3 +3,4 @@ libtinyhttp.a
 src/*.o
 test/*.o
 test/test.o
+examples/*/*.o

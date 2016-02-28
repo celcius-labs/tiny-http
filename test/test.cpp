@@ -83,6 +83,8 @@ int main (int argc, char **argv) {
 
   test(test_response_write, "Response Write");
 
+  test(test_routing, "Routing");
+
 
 #ifdef ARDUINO
   Serial.println();
